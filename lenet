@@ -1,0 +1,56 @@
+#include <iostream>
+#include <fstream>
+#include "mnist.hpp"
+#include "tensor.hpp"
+#include "neural_network.hpp"  // Assuming you have a separate file for NeuralNetwork class
+
+int main(void) {
+    std::string mnistPath = "/mnt/d/Etudes/Computer-Vision/assignment/t10k-images-idx3-ubyte";
+    MNIST mnist(mnistPath);
+
+    // Uncommented the following block to print the MNIST images
+    /*
+    for (size_t n = 0; n < mnist.total_imgs(); ++n) {
+        mnist.print(n);
+    }
+    */
+
+    Tensor input = mnist.at(10);
+    mnist.print(10);
+    input.print();
+
+    // Model definition
+    NeuralNetwork lenet;
+    lenet.add(Conv2d());
+    lenet.add(ReLu());
+    lenet.add(MaxPool2d());
+    lenet.add(Conv2d());
+    lenet.add(ReLu());
+    lenet.add(MaxPool2d());
+    lenet.add(Linear());
+    lenet.add(ReLu());
+    lenet.add(Linear());
+    lenet.add(ReLu());
+    lenet.add(Linear());
+    lenet.add(ReLu());
+    lenet.add(SoftMax());
+
+    // Engaging the predict - forward propagation
+    Tensor output = lenet.predict(input);
+
+    // Print the output tensor
+    output.print();
+
+    /*
+    // Uncommented the following block for reading weights from a file
+    std::string lenetpath = "/mnt/d/Etudes/Computer-Vision/assignment/lenet.raw";
+    std::ifstream file(lenetpath, std::ios::binary);
+    // Read weights into a Tensor, assuming it's a flat binary file
+    Tensor weights;
+    weights.readBinary(file);
+    // Print the loaded weights
+    weights.print();
+    */
+
+    return 0;
+}
